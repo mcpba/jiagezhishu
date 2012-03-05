@@ -11,13 +11,14 @@ def inputP0():
     #数据表必须是数据文件第一个表
     ws=wb.get_sheet_by_name(sheet_names[0])     
     d={}
-    for row in ws.iter_rows(row_offset=1,):
+    for row in ws.iter_rows():
         #读入全国平均单价
-        tmp=row[4].internal_value 
+        tmp=row[4].internal_value
+        print tmp
         #创建聚合的价格数据              
-        result=Goods(0,0,tmp)
+        result=Goods(0.0,0.0,tmp)
         #与8位税号建立关联关系                    
-        d[str(row[2].internal_value)[0:8]]=result    
+        d[(str(row[2].internal_value)).strip()[0:8]]=result    
     return d
 
 #输入通关数据
@@ -37,6 +38,7 @@ def inputP1(d):
                 if hscode in d:              
                     d[hscode].ttl+=float(row[25].internal_value)
                     d[hscode].amout+=float(row[27].internal_value)
+                    # 引用通关数据的统计美元值进行计算
                     # d[hscode].huilv=float(row[19].internal_value)                
     return d
 
@@ -61,11 +63,10 @@ def calc(d):
         if flag(v):                         
             fenzi+=v.p1*v.ttl
             fenmu+=v.p0*v.ttl
-        print "fenzi:%F; fenmu:%F"%(fenzi,fenmu)
+    print "fenzi:%F; fenmu:%F"%(fenzi,fenmu)
     #计算每个税号的影响度
     for k,v in d.iteritems():
-        if flag(v):
-            print "hscode:%s;;p0:%F;;P1:%F;;TTL:%F\n"%(k,v.p0,v.p1,v.ttl)
+        if flag(v):            
             v.affect=v.ttl*(v.p1-v.p0)/fenmu*100.0
             ws.append([k,v.affect])   
     wb.save('affect.xlsx')
