@@ -14,7 +14,8 @@ def inputP0():
     for row in ws.iter_rows():
         #读入全国平均单价
         tmp=row[4].internal_value
-        print tmp
+        if str(tmp).isdigit():
+            tmp=float(tmp)
         #创建聚合的价格数据              
         result=Goods(0.0,0.0,tmp)
         #与8位税号建立关联关系                    
