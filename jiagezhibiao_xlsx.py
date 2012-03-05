@@ -36,8 +36,8 @@ def inputP1(d):
                 #如果全国平均单价没有此类，则舍弃该数据             
                 if hscode in d:              
                     d[hscode].ttl+=float(row[25].internal_value)
-                    d[hscode].amout+=float(row[28].internal_value)
-                    d[hscode].huilv=float(row[19].internal_value)                
+                    d[hscode].amout+=float(row[27].internal_value)
+                    # d[hscode].huilv=float(row[19].internal_value)                
     return d
 
 #奇异点判断函数
@@ -61,9 +61,11 @@ def calc(d):
         if flag(v):                         
             fenzi+=v.p1*v.ttl
             fenmu+=v.p0*v.ttl
+        print "fenzi:%F; fenmu:%F"%(fenzi,fenmu)
     #计算每个税号的影响度
     for k,v in d.iteritems():
         if flag(v):
+            print "hscode:%s;;p0:%F;;P1:%F;;TTL:%F\n"%(k,v.p0,v.p1,v.ttl)
             v.affect=v.ttl*(v.p1-v.p0)/fenmu*100.0
             ws.append([k,v.affect])   
     wb.save('affect.xlsx')
