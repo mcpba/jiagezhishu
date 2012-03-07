@@ -5,7 +5,7 @@ from openpyxl import Workbook
 from goods import Goods
 
 #先输入p0--全国平均单价
-def inputP0():   
+def inputP0(P0,HSCODE_quanguo):   
     wb=load_workbook(filename = 'data//quanguo.xlsx', use_iterators=True)
     sheet_names= wb.get_sheet_names()
     #数据表必须是数据文件第一个表
@@ -13,17 +13,17 @@ def inputP0():
     d={}
     for row in ws.iter_rows():
         #读入全国平均单价
-        tmp=row[4].internal_value
+        tmp=row[P0].internal_value
         if str(tmp).isdigit():
             tmp=float(tmp)
         #创建聚合的价格数据              
         result=Goods(0.0,0.0,tmp)
         #与8位税号建立关联关系                    
-        d[(str(row[2].internal_value)).strip()[0:8]]=result    
+        d[(str(row[HSCODE_quanguo].internal_value)).strip()[0:8]]=result    
     return d
 
 #输入通关数据
-def inputP1(d):             
+def inputP1(d,HSCODE_tongguan,Qty,Amount):             
     dirs=os.listdir('data//')
     print dirs[0]
     for filename in dirs:
@@ -34,11 +34,11 @@ def inputP1(d):
             ws=wb.get_sheet_by_name(sheet_names[0])          
             for row in ws.iter_rows(row_offset=1,):
                 #不同数据文件需要调整行号
-                hscode=unicode(row[14].internal_value)[0:8]
+                hscode=unicode(row[HSCODE_tongguan].internal_value)[0:8]
                 #如果全国平均单价没有此类，则舍弃该数据             
                 if hscode in d:              
-                    d[hscode].ttl+=float(row[25].internal_value)
-                    d[hscode].amout+=float(row[27].internal_value)
+                    d[hscode].ttl+=float(row[Qty].internal_value)
+                    d[hscode].amout+=float(row[Amount].internal_value)
                     # 引用通关数据的统计美元值进行计算
                     # d[hscode].huilv=float(row[19].internal_value)                
     return d
@@ -75,8 +75,13 @@ def calc(d):
             
 
 def main():
-    d=inputP0()
-    d=inputP1(d)       
+    config=[]
+    with open("config.ini") as f:
+        for line in f:
+            config.append(int(line.split(':')[1])-1)
+        f.close()
+    d=inputP0(config[0],config[1])
+    d=inputP1(d,config[2],config[3],config[4])       
     print calc(d)
     
 if __name__=='__main__':

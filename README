@@ -1,2 +1,14 @@
- ��Ҫopenpyxl��http://packages.python.org/openpyxl/�� ֧�֣�ֱ��xlsx
+﻿本程序需要openpyxl（一个python直读xlsx的库）支持
+依赖的软件：
+1、需要python 2.7 http://python.org/getit/
+2、需要安装 setuptools http://pypi.python.org/pypi/setuptools
+3、需要openpyxl http://packages.python.org/openpyxl/
+4、在程序目录新建data目录，将全国平均价格数据表与通关数据表放入此目录。
+
+使用
+1、全国平均单价文件名必须是quanguo.xlsx(格式必须是office 2007格式下同)；通关数据文件任意，扩展名必须是xlsx
+2、需要修改cofig.ini 的各个行,冒号以后填入对应数据项在数据表格中的列号（必须为整数）
+3、在cmd 窗口输入python jiagezhibiao_xlsx.py 或者单击jiagezhibiao_xlsx.py右键选择Edit with IDLE 然后按 F5即可（仅限window平台）
+
+
  
